@@ -26,7 +26,7 @@ func main() {
 			fmt.Println(item.Task)
 		}
 
-		// Concatenate args and add to list.
+	// Concatenate args and add to list.
 	default:
 		item := strings.Join(os.Args[1:], " ")
 		l.Add(item)
