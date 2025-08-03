@@ -20,6 +20,8 @@ type item struct {
 // Represents a list of todo items.
 type List []item
 
+// Add
+// Add an item to the todo list.
 func (l *List) Add(task string) {
 	t := item{
 		Task:        task,
@@ -30,6 +32,8 @@ func (l *List) Add(task string) {
 	*l = append(*l, t)
 }
 
+// Complete
+// Mark an item as complete.
 func (l *List) Complete(i int) error {
 	ls := *l
 	if i <= 0 || i > len(ls) {
@@ -41,6 +45,8 @@ func (l *List) Complete(i int) error {
 	return nil
 }
 
+// Delete
+// Remove an item from the list.
 func (l *List) Delete(i int) error {
 	ls := *l
 	if i <= 0 || i > len(ls) {
@@ -50,6 +56,8 @@ func (l *List) Delete(i int) error {
 	return nil
 }
 
+// Save
+// Save the todo list to a file.
 func (l *List) Save(filename string) error {
 	js, err := json.Marshal(l)
 	if err != nil {
@@ -58,6 +66,8 @@ func (l *List) Save(filename string) error {
 	return ioutil.WriteFile(filename, js, 0644)
 }
 
+// Get
+// Load a todo list from a file.
 func (l *List) Get(filename string) error {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
