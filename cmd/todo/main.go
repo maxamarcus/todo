@@ -11,6 +11,17 @@ const todoFileName = ".todo.json"
 
 func main() {
 
+    flag.Usage = func() {
+        fmt.Fprintf(flag.CommandLine.Output(),
+            "%s tool. By Max Marcus\n", os.Args[0])
+        fmt.Fprintf(flag.CommandLine.Output(),
+            "Taken from \"Powerful Command Line Applications in Go\"\n" +
+            "by Ricardo Gerardi, Pragmatic Bookshelf (c) 2020.\n")
+        fmt.Fprintf(flag.CommandLine.Output(),
+            "Usage information:\n")
+        flag.PrintDefaults()
+    }
+
     // Command line flags.
     // Variables here are ***pointers.
     task := flag.String("task", "", "Task to add to todo list.")
