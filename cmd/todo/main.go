@@ -1,15 +1,24 @@
 package main
 
 import (
+    "flag"
 	"fmt"
 	"os"
-	"strings"
 	"todo"
 )
 
 const todoFileName = ".todo.json"
 
 func main() {
+
+    // Command line flags.
+    // Variables here are ***pointers.
+    task := flag.String("task", "", "Task to add to todo list.")
+    list := flag.Bool("list", false, "List all tasks.")
+    complete := flag.Int("complete", 0, "Item number to mark as complete.")
+    flag.Parse()
+
+    // Initialize item list from todo package.
 	l := &todo.List{}
 
 	// Load the todo list from a file.
@@ -18,21 +27,45 @@ func main() {
 		os.Exit(1)
 	}
 
+    // Follow according to flags.
 	switch {
 
-	// No args -- print list
-	case len(os.Args) == 1:
-		for _, item := range *l {
-			fmt.Println(item.Task)
-		}
+    // Print the todo list.
+    case *list:
+        for _, item := range *l {
+            if !item.Done {
+                fmt.Println(item.Task)
+            }
+        }
+    
+    // Mark an item as complete.
+    case *complete > 0:
+        
+        // Mark the item of the given number as complete.
+        if err := l.Complete(*complete); err != nil {
+            fmt.Fprintln(os.Stderr, err)
+            os.Exit(1)
+        }
 
-	// Concatenate args and add to list.
+        // Save the list.
+        if err := l.Save(todoFileName); err != nil {
+            fmt.Fprintln(os.Stderr, err)
+            os.Exit(1)
+        }
+
+    // Add a task.
+    case *task != "":
+        l.Add(*task)
+
+        // Save.
+        if err := l.Save(todoFileName); err != nil {
+            fmt.Fprintln(os.Stderr, err)
+            os.Exit(1)
+        }
+
+    // Invalid flag.
 	default:
-		item := strings.Join(os.Args[1:], " ")
-		l.Add(item)
-		if err := l.Save(todoFileName); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-	}
+        fmt.Fprintln(os.Stderr, "Invalid option.")
+        os.Exit(1)
+    }
 }
