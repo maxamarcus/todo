@@ -52,6 +52,7 @@ func (l *List) Delete(i int) error {
 	if i <= 0 || i > len(ls) {
 		return fmt.Errorf("Item %d does not exist", i)
 	}
+    // Adjust index to 0-index.
 	*l = append(ls[:i-1], ls[i:]...)
 	return nil
 }
