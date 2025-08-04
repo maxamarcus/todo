@@ -67,7 +67,7 @@ func TestTodoCLI(t *testing.T) {
 		}
 
 		// Expected output -- test data as added in prior test
-		expected := task + "\n"
+		expected := fmt.Sprintf("  1: %s\n", task)
 		if expected != string(out) {
 			t.Errorf("Expected %q, got %q\n", expected, string(out))
 		}

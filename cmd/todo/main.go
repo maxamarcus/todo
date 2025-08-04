@@ -45,11 +45,7 @@ func main() {
 
     // Print the todo list.
     case *list:
-        for _, item := range *l {
-            if !item.Done {
-                fmt.Println(item.Task)
-            }
-        }
+        fmt.Print(l)
     
     // Mark an item as complete.
     case *complete > 0:
