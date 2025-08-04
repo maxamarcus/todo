@@ -7,7 +7,8 @@ import (
 	"todo"
 )
 
-const todoFileName = ".todo.json"
+// File name default.
+var todoFileName = ".todo.json"
 
 func main() {
 
@@ -34,7 +35,12 @@ func main() {
     // Initialize item list.
 	l := &todo.List{}
 
-	// Load the todo list from a file.
+    // Check if user defined env var for custom file name.
+    if os.Getenv("TODO_FILENAME") != "" {
+        todoFileName = os.Getenv("TODO_FILENAME")
+    }
+
+	// Load the todo list from the file.
 	if err := l.Get(todoFileName); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
