@@ -11,6 +11,7 @@ const todoFileName = ".todo.json"
 
 func main() {
 
+    // -h option
     flag.Usage = func() {
         fmt.Fprintf(flag.CommandLine.Output(),
             "%s tool. By Max Marcus\n", os.Args[0])
@@ -23,13 +24,14 @@ func main() {
     }
 
     // Command line flags.
-    // Variables here are ***pointers.
+    // Return values of these functions are **pointers.
+    // parameters -- flag name, default value, help message
     task := flag.String("task", "", "Task to add to todo list.")
     list := flag.Bool("list", false, "List all tasks.")
     complete := flag.Int("complete", 0, "Item number to mark as complete.")
     flag.Parse()
 
-    // Initialize item list from todo package.
+    // Initialize item list.
 	l := &todo.List{}
 
 	// Load the todo list from a file.
