@@ -1,6 +1,9 @@
 package main
 
 import (
+    "bufio"
+    "io"
+    "strings"
     "flag"
 	"fmt"
 	"os"
@@ -9,6 +12,7 @@ import (
 
 // File name default.
 var todoFileName = ".todo.json"
+
 
 func main() {
 
@@ -27,7 +31,7 @@ func main() {
     // Command line flags.
     // Return values of these functions are **pointers.
     // parameters -- flag name, default value, help message
-    task := flag.String("task", "", "Task to add to todo list.")
+    add := flag.Bool("add", false, "Add task to todo list.")
     list := flag.Bool("list", false, "List all tasks.")
     complete := flag.Int("complete", 0, "Item number to mark as complete.")
     flag.Parse()
@@ -69,8 +73,13 @@ func main() {
         }
 
     // Add a task.
-    case *task != "":
-        l.Add(*task)
+    case *add:
+        t, err := getTask(os.Stdin, flag.Args()...)
+        if err != nil {
+            fmt.Fprintln(os.Stderr, err)
+            os.Exit(1)
+        }
+        l.Add(t)
 
         // Save.
         if err := l.Save(todoFileName); err != nil {
@@ -83,4 +92,24 @@ func main() {
         fmt.Fprintln(os.Stderr, "Invalid option.")
         os.Exit(1)
     }
+}
+
+
+func getTask(r io.Reader, args ...string) (string, error) {
+
+    // Command line arguments.
+    if len(args) > 0 {
+        return strings.Join(args, " "), nil
+    }
+
+    // Standard input arguments.
+    s := bufio.NewScanner(r)
+    s.Scan()
+    if err := s.Err(); err != nil {
+        return "", err
+    }
+    if len(s.Text()) == 0 {
+        return "", fmt.Errorf("Task cannot be blank.")
+    }
+    return s.Text(), nil
 }
